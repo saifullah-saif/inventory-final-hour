@@ -32,6 +32,30 @@ export async function GET() {
   }
 }
 
+
+export async function GET(request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get('id');
+
+    if (!id) {
+      return NextResponse.json({ error: 'Customer ID is required' }, { status: 400 });
+    }
+
+    const [rows] = await pool.query('SELECT * FROM customers WHERE customer_id = ?', [id]);
+
+    if (rows.length === 0) {
+      return NextResponse.json({ error: 'Customer not found' }, { status: 404 });
+    }
+
+    return NextResponse.json(rows[0]);
+  } catch (error) {
+    console.error('Error fetching customer:', error);
+    return NextResponse.json({ error: 'Failed to fetch customer' }, { status: 500 });
+  }
+}
+
+
 export async function POST(request) {
   try {
     const data = await request.json();

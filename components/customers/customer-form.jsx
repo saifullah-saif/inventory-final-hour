@@ -36,23 +36,46 @@ export function CustomerForm({ customerId }) {
       setLoading(true)
       setTimeout(() => {
         setCustomer({
-          firstName: "John",
-          lastName: "Doe",
-          email: "john.doe@example.com",
-          phone: "(555) 123-4567",
-          address: "123 Main St",
-          city: "New York",
-          state: "NY",
-          zipCode: "10001",
-          country: "United States",
+          firstName: "",
+          lastName: "",
+          email: "",
+          phone: "",
+          address: "",
+          city: "",
+          state: "",
+          zipCode: "",
+          country: "",
           customerType: "Individual",
-          notes: "Loyal customer since 2020",
+          notes: "",
         })
         setLoading(false)
       }, 500)
     }
     // When adding a new customer, we'll use the empty form initialized in useState
   }, [customerId])
+
+  useEffect(() => {
+    const fetchCustomers = async () => {
+      try {
+        const response = await fetch('/api/customers')
+        if (!response.ok) throw new Error('Failed to fetch customers')
+        const data = await response.json()
+        setCustomers(data)
+      } catch (error) {
+        console.error('Error fetching customers:', error)
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to fetch customers. Please try again.",
+        })
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchCustomers()
+  }, [toast])
+
 
   const handleChange = (e) => {
     const { name, value } = e.target

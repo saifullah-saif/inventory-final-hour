@@ -29,22 +29,25 @@ export function CustomerForm({ customerId }) {
     notes: "",
   })
 
-  useEffect(() => {
+
+
+  useEffect((customerData) => {
     if (customerId) {
       // In a real app, fetch customer data from API
       // For demo, we'll use mock data
       setLoading(true)
       setTimeout(() => {
         setCustomer({
-          firstName: "",
-          lastName: "",
-          email: "",
-          phone: "",
-          address: "",
-          city: "",
-          state: "",
-          zipCode: "",
-          country: "",
+          firstName: "customerData.firstName",
+          lastName: "customerData.lastName",
+          email: "customerData.email",
+          phone: "customerData.phone",
+          address: "cusotmerData.address",
+
+          city: "New York",
+          state: "NY",
+          zipCode: "10001",
+          country: "United States",
           customerType: "Individual",
           notes: "",
         })
@@ -99,6 +102,36 @@ export function CustomerForm({ customerId }) {
       })
       setLoading(false)
       return
+    }
+
+    const handleCustomerForm = async () => {
+      
+  
+      
+  
+      try {
+        const response = await fetch(`/api/customers?id=${customer.customer_id}`, {
+          method: 'DELETE',
+        })
+  
+        if (!response.ok) throw new Error('Failed get customer info')
+  
+        setCustomers(customers.filter((customer) => customer.customer_id == customer.customer_id))
+  
+        toast({
+          title: "Customer got",
+          
+        })
+      } catch (error) {
+        console.error('Error deleting customer:', error)
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: "Failed to delete customer. Please try again.",
+        })
+      } finally {
+        
+      }
     }
 
     // In a real app, send data to API
